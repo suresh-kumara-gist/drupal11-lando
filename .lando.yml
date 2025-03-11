@@ -1,0 +1,11 @@
+name: simpleblogsetup11
+recipe: drupal11
+config:
+  webroot: web
+services:
+  appserver:
+    ports:
+      - "8084:80"
+      - "8085:443"
+
+#  [success] Installation complete.  User name: admin  User password: odW4tZxmJQ

@@ -1,0 +1,39 @@
+networks:
+  sm-network:
+
+services:
+  smweb:
+    build: .
+    container_name: sm-drupal-web
+    restart: always
+    ports:
+      - "8081:80"
+    networks:
+      - sm-network
+    volumes:
+      - ./:/opt/drupal  # Mount your custom Drupal project to /opt/drupal
+    #env_file:
+    #  - .env
+    environment:
+      - DRUPAL_DB_HOST=drupal11
+      - DRUPAL_DB_PORT=3306
+      - DRUPAL_DB_NAME=drupal11
+      - DRUPAL_DB_USER=drupal11
+      - DRUPAL_DB_PASSWORD=drupal11
+    entrypoint: ["sh", "-c", "composer install && apache2-foreground"]  # Run composer install before starting the server
+    depends_on:
+      - database
+
+  database:
+    image: mariadb:latest
+    container_name: sm-mariadb-db
+    networks:
+      - sm-network
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: drupal11
+      MYSQL_USER: drupal11
+      MYSQL_PASSWORD: drupal11
+    volumes:
+      - ./mariadb-data:/var/lib/mysql

@@ -1,0 +1,117 @@
+<?php
+
+/**
+ * @file
+ * Implements hook_preprocess_html().
+ *
+ * Override the variables into the html template.
+ */
+
+use Drupal\Core\Url;
+use Drupal\file\Entity\File;
+use Drupal\Core\File\FileUrlGeneratorInterface;
+use Drupal\Core\Config\ConfigFactoryInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
+/**
+ * Implements hook_preprocess_html().
+ */
+function simpleblog_preprocess_html(array &$variables) {
+  // Get the theme configuration service.
+  $config = \Drupal::config('simpleblog.settings');
+
+  // Grid view setting.
+  $grid = $config->get('grid_view');
+  if ($grid) {
+    $variables['attributes']['class'][] = 'sbgrid';
+  }
+}
+
+/**
+ * Implements hook_preprocess_page().
+ *
+ * Override the variables into the page template.
+ */
+function simpleblog_preprocess_page(array &$variables) {
+  // Get the theme configuration service.
+  $config = \Drupal::config('simpleblog.settings');
+  
+  // Banner Image.
+  $show_banner = $config->get('show');
+  $variables['show_banner'] = $show_banner;
+
+  if ($show_banner) {
+    $fid = $config->get('image');
+    if (!empty($fid)) {
+      $file = File::load($fid[0]);
+      if ($file) {
+        /** @var \Drupal\Core\File\FileUrlGeneratorInterface $file_url_generator */
+        $file_url_generator = \Drupal::service('file_url_generator');
+        $image_path = $file_url_generator->generateAbsoluteString($file->getFileUri());
+      }
+    }
+    else {
+      $image_path = \Drupal::theme()->getActiveTheme()->getPath() . '/images/banner.jpg';
+    }
+    $variables['banner_image'] = $image_path;
+  }
+
+  // Copyright.
+  $copyright = $config->get('copyright');
+  $variables['copyright'] = $copyright . ' ' . date('Y');
+
+  // Social Links.
+  $variables['drupal_link'] = $config->get('drupal');
+  $variables['facebook_link'] = $config->get('facebook');
+  $variables['instagram_link'] = $config->get('instagram');
+  $variables['twitter_link'] = $config->get('twitter');
+  $variables['googleplus_link'] = $config->get('googleplus');
+
+  // Add information about the number of sidebars.
+  if (!empty($variables['page']['sidebar_first']) && !empty($variables['page']['sidebar_second'])) {
+    $variables['main_class'] = 'col6';
+    $variables['sf_class'] = 'col3';
+    $variables['ss_class'] = 'col3';
+  }
+  elseif (!empty($variables['page']['sidebar_first'])) {
+    $variables['main_class'] = 'col9';
+    $variables['sf_class'] = 'col3';
+  }
+  elseif (!empty($variables['page']['sidebar_second'])) {
+    $variables['main_class'] = 'col9';
+    $variables['ss_class'] = 'col3';
+  }
+  else {
+    $variables['main_class'] = 'col12';
+  }
+}
+
+/**
+ * Prepares variables for breadcrumb templates.
+ * Default template: breadcrumb.html.twig.
+ */
+function simpleblog_preprocess_breadcrumb(array &$variables) {
+  // Set cache context as 'URL'.
+  $variables['#cache']['contexts'][] = 'url';
+
+  // Set breadcrumb.
+  if (($node = \Drupal::routeMatch()->getParameter('node')) && $variables['breadcrumb']) {
+    $variables['breadcrumb'][] = [
+      'text' => $node->getTitle(),
+      'url' => $node->toUrl()->toString(),
+    ];
+  }
+}
+
+/**
+ * Implements theme_suggestions_node_alter().
+ */
+function simpleblog_theme_suggestions_node_alter(array &$suggestions, array $variables, $hook) {
+  $node = $variables['elements']['#node'];
+  $type = $node->bundle();
+  $view_mode = $variables['elements']['#view_mode'];
+
+  // Add custom node suggestions based on content type and view mode.
+  $suggestions[] = 'node__' . $type;
+  $suggestions[] = 'node__' . $type . '__' . $view_mode;
+}
