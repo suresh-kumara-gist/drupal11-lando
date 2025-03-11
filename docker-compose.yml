@@ -22,15 +22,15 @@ services:
       - database
 
   database:
-    image: mariadb:latest
+    image: mariadb
     container_name: sm-db
     networks:
       - sm-network2
     environment:
       MYSQL_ROOT_PASSWORD: root_password
-      MYSQL_DATABASE: drupal
-      MYSQL_USER: drupal
-      MYSQL_PASSWORD: drupal_password
+      MYSQL_DATABASE: drupal11
+      MYSQL_USER: drupal11
+      MYSQL_PASSWORD: drupal11
     volumes:
       - ./mariadb-data:/var/lib/mysql
     restart: always
