@@ -1,0 +1,44 @@
+name: SimpleBlog
+type: theme
+base theme: stable9
+description: 'Simple Blog Drupal Responsive Blog theme. Developed by <a target="_blank" href="http://www.thirstysix.com">Thirsty Six</a>'
+core_version_requirement: ^10 || ^11
+
+# Regions
+regions:
+  site_brand: 'Site Brand'
+  main_navigation: 'Main Navigation'
+  highlighted: 'Highlighted'
+  breadcrumb: 'Breadcrumb'
+  title: 'Title'
+  help: 'Help'
+  sidebar_first: 'First Sidebar'
+  content: 'Content'  
+  sidebar_second: 'Second Sidebar'
+  footer_first: 'First Bottom'
+  footer_second: 'Second Bottom'
+  footer_third: 'Third Bottom'
+  footer_fourth: 'Fourth Bottom'
+
+# Libraries
+libraries:
+  - simpleblog/global-css
+  - simpleblog/global-js
+  - simpleblog/masonry
+
+# Features
+features:
+  - 'logo'
+  - 'name'
+  - 'slogan'
+  - 'node_user_picture'
+  - 'comment_user_picture'
+  - 'comment_user_verification'
+  - 'favicon'
+  - 'main_menu'
+  - 'secondary_menu'
+
+# Information added by Drupal.org packaging script on 2023-10-19
+version: '2.1.0'
+project: 'simpleblog'
+datestamp: 1697740463
