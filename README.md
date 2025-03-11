@@ -22,3 +22,12 @@ run below command to setup drupal 11 instance using lando.
 $ lando start
 ```
 
+
+If docker :
+access code base 
+$ docker compose exec -it web /bin/bash 
+access  database
+$ docker compose exec -it db /bin/bash 
+
+drush and composer are installed.  
+
